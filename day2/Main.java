@@ -1,7 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 public class Main {
     static long cumsum; 
     
@@ -13,6 +12,13 @@ public class Main {
         return(part1.equals(part2)); 
     }
 
+    public static boolean checkFakePart2(long num) {
+        String s = String.valueOf(num);
+        String doubled = s + s;
+        String cut = doubled.substring(1, doubled.length() - 1);
+        return cut.contains(s);
+    }
+
     public static void main(String[] args) {
         BufferedReader reader;
         try {
@@ -22,7 +28,7 @@ public class Main {
             for (String range: splitted) {
                 String[] spltRan = range.split("-");
                 for(long i = Long.parseLong(spltRan[0]); i <= Long.parseLong(spltRan[1]); i++) {
-                    if (checkFake(i)) cumsum += i;
+                    if (checkFakePart2(i)) cumsum += i;
                 }
             }
             reader.close();
@@ -32,3 +38,4 @@ public class Main {
         System.out.println(cumsum);
      }
 }
+
