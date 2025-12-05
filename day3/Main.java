@@ -12,42 +12,46 @@ public class Main {
         for (int x : arr) sb.append(x);
         return sb.toString();
     }
-
-    public static int[] removeValueAtIndex(int[] arr, int index) {
-        int[] newArr = new int[arr.length - 1];
-        int idx = 0;
-        for (int i = 0; i <= arr.length - 1; i++) {
-            if (i != index) {
-                newArr[idx] = arr[i];
-                idx++;
-            }
-        }
-        return (newArr);
-    }
-
-    public static int findIndexMin(int[] nums) {
-        int minAt = 0;
+    
+    public static int findIndexMax(int[] nums) {
+        int maxAt = 0;
         for (int i = 0; i < nums.length; i++) {
-            minAt = nums[i] < nums[minAt] ? i : minAt;
+            maxAt = nums[i] > nums[maxAt] ? i : maxAt;
         }
-        return (minAt);
+        return (maxAt);
     }
     public static long findMaxJoltPart2(String bank) {
-        String[] splitted = bank.split("");
-        int[] jolts = new int[splitted.length];
+        char[] chars = bank.toCharArray();
+        int[] jolts = new int[chars.length];
+        int[] inds = new int[12];
+        int[] res = new int[12];
 
-        for (int i = 0; i <= splitted.length - 1; i++) {
-            jolts[i] = Integer.parseInt(splitted[i]);
+        for (int i = 0; i < chars.length; i++) {
+            jolts[i] = chars[i] - '0';
         }
 
-        while (jolts.length > 12) {
-            jolts = removeValueAtIndex(jolts, findIndexMin(jolts));
+        int prevStart = 0;
+
+        for (int i = 0; i < 12; i++) {
+
+            int start = prevStart;
+            int end = jolts.length - (11 - i);
+            int[] slice = Arrays.copyOfRange(jolts, start, end);
+
+            int localIndex = findIndexMax(slice);
+            int globalIndex = start + localIndex;
+
+            inds[i] = globalIndex;
+            res[i] = jolts[globalIndex];
+
+            prevStart = globalIndex + 1;
         }
-        
-        System.out.println(digitsToString(jolts));
-        return(Long.parseLong(digitsToString(jolts)));
+
+        String result = digitsToString(res);
+        System.out.println(result);
+        return Long.parseLong(result);
     }
-
+ 
     public static int findMaxJolt(String bank) {
         String[] splitted = bank.split("");
         int[] jolts = new int[splitted.length];
@@ -73,11 +77,10 @@ public class Main {
     public static void main(String[] args) {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("input_day3.txt"));
+            reader = new BufferedReader(new FileReader("input.txt"));
             String line = reader.readLine();
             while (line != null) {
-                cumsum += findMaxJolt(line);
-                System.out.println(findMaxJolt(line));
+                cumsum += findMaxJoltPart2(line);
                 line = reader.readLine();
             }
             reader.close();
